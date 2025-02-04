@@ -1,0 +1,47 @@
+name: Deploy Docusaurus to GitHub Pages
+
+on:
+  push:
+    tags:
+      - v*
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm # Change to 'npm' if using npm
+
+      - name: Install dependencies
+        run: |
+          npm ci --frozen-lockfile
+
+      - name: Build Docusaurus site
+        run: |-
+          npm run build
+
+      - name: Deploy Docs
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          # Deploy Docs
+          branch: gh-pages
+          folder: ./build
+          token: ${{ secrets.ACCESS_TOKEN }}
+          single-commit: true
