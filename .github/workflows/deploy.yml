@@ -41,7 +41,8 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           # Deploy Docs
-          branch: gh-pages
+          repository-name: ititcloud/ititcloud.github.io
+          branch: master
           folder: ./build
           token: ${{ secrets.ACCESS_TOKEN }}
           single-commit: true
